@@ -1,0 +1,8 @@
+{
+  "python.analysis.extraPaths": [
+    "./Assets/Python",
+    "./Project Files/DLLSources"
+  ],
+  "cSpell.words": ["Civilopedia", "Pedia"],
+  "python.languageServer": "Pylance"
+}

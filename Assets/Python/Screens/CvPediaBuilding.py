@@ -19,6 +19,7 @@ class CvPediaBuilding:
 
 	# Screen construction function
 	def interfaceScreen(self, iBuilding, x, y, h, w):
+
 		
 		# TAC/Ronnar
 		self.XResolution = self.top.getScreen().getXResolution()
@@ -80,6 +81,7 @@ class CvPediaBuilding:
 		self.top.deleteAllWidgets()
 		screen = self.top.getScreen()
 
+
 		bNotActive = (not screen.isActive())
 		if bNotActive:
 			self.top.setPediaCommonWidgets()
@@ -106,6 +108,218 @@ class CvPediaBuilding:
 		self.placeStats()
 		self.placeSpecial()
 		self.placeHistory()
+
+		iPanelX = x
+		iPanelH = 64 + 20
+		iPanelY = y + h - iPanelH
+		iPanelW = w
+
+
+		def placeFrame(title, x,y,w,h):
+			screen.addPanel(self.top.getNextWidgetName(), title, "", False, False, x, y, w, h, PanelStyles.PANEL_STYLE_BLUE50, WidgetTypes.WIDGET_GENERAL, -1, -1)
+
+		def placeBuildingIcon(iBuilding, x,y,sz):
+			screen.addDDSGFC(self.top.getNextWidgetName(), gc.getBuildingInfo(iBuilding).getButton(), x, y, sz, sz, WidgetTypes.WIDGET_PEDIA_JUMP_TO_BUILDING, iBuilding, -1)
+
+
+
+		kBuildingInfo = gc.getBuildingInfo(iBuilding)
+		iSpecialBuildingType = kBuildingInfo.getSpecialBuildingType()
+		kSpecialBuildingInfo = gc.getSpecialBuildingInfo(iSpecialBuildingType)
+		sSpecialBuildingName = kSpecialBuildingInfo.getDescription() 
+		placeFrame(sSpecialBuildingName, iPanelX, iPanelY, iPanelW, iPanelH)
+
+
+		listSpecialBuildings = []
+		for iBuildingLoop in range(gc.getNumBuildingInfos()):
+			kBuildingInfoLoop = gc.getBuildingInfo(iBuildingLoop)
+			if (not kBuildingInfoLoop.isGraphicalOnly()):
+				if(kBuildingInfoLoop.getSpecialBuildingType() == iSpecialBuildingType):
+					listSpecialBuildings.append(iBuildingLoop)
+		def listSpecialBuildingsCampare(e):
+		  	return gc.getBuildingInfo(e).getSpecialBuildingPriority()
+		listSpecialBuildings.sort(key = listSpecialBuildingsCampare)
+
+		# iIconSize = 64
+		# iIconGap = 4
+		# iIconY = iPanelY + iIconGap + 25
+		# iIconX = iPanelX + iIconGap + 0
+		# for iBuildingLoop in listSpecialBuildings:
+		# 	kBuildingInfoLoop = gc.getBuildingInfo(iBuildingLoop)
+		# 	placeBuildingIcon(kBuildingInfoLoop, iIconX, iIconY, iIconSize, 8)
+		# 	iIconX += iIconSize + iIconGap
+
+
+		# Список классов построек в специальности
+		listSpecialBuildingsClasses = []
+		# Список построек в специальности (отличаются по классам)
+		listSpecialBuildings = []
+		# Список построек необходимых для строительства
+		listBuildingClassNeededsIn = []
+		listBuildingNeededsIn = []
+		# Список построек для которых необходима эта постройка
+		listBuildingClassNeededsOut = []
+		listBuildingNeededsOut = []
+
+
+		kBuildingInfo = gc.getBuildingInfo(iBuilding)
+		iBuildingClass = kBuildingInfo.getBuildingClassType()
+		for iBuildingLoop in range(gc.getNumBuildingInfos()):
+			kBuildingInfoLoop = gc.getBuildingInfo(iBuildingLoop)
+			if (not kBuildingInfoLoop.isGraphicalOnly()):
+				iBuildingClassLoop = kBuildingInfoLoop.getBuildingClassType()
+				if(kBuildingInfoLoop.getSpecialBuildingType() == iSpecialBuildingType):
+					if iBuildingClassLoop not in listSpecialBuildingsClasses:
+						listSpecialBuildingsClasses.append(iBuildingClassLoop)
+					listSpecialBuildings.append(iBuildingLoop)
+
+				if kBuildingInfo.isBuildingClassNeededInCity(iBuildingClassLoop):
+					if iBuildingClassLoop not in listBuildingClassNeededsIn:
+						listBuildingClassNeededsIn.append(iBuildingClassLoop)
+					listBuildingNeededsIn.append(iBuildingLoop)
+
+				if kBuildingInfoLoop.isBuildingClassNeededInCity(iBuildingClass):
+					if iBuildingClassLoop not in listBuildingClassNeededsOut:
+						listBuildingClassNeededsOut.append(iBuildingClassLoop)
+					listBuildingNeededsOut.append(iBuildingLoop)
+
+		def listBuildingClassCmp(iBuildingClass):
+		  	return gc.getBuildingInfo(gc.getBuildingClassInfo(iBuildingClass).getDefaultBuildingIndex()).getSpecialBuildingPriority()
+		# listSpecialBuildingsClasses.sort(key = listBuildingClassCmp)
+
+		# def listClassesUpgrade(listClasses, listBuildings, listClasses2):
+		# 	listClasses.sort(key = listBuildingClassCmp)
+		# 	for iBuildingClassLoop in listClasses:
+		# 		listBuildings = []
+		# 		for iBuildingLoop in listBuildings:
+		# 			iBuildingClassLoop2 = gc.getBuildingInfo(iBuildingLoop).getBuildingClassType()
+		# 			if iBuildingClassLoop2 == iBuildingClassLoop:
+		# 				listBuildings.append(iBuildingLoop)
+		# 		listClasses2.append(listBuildings)
+
+		# listSpecialBuildingsClasses2 = []
+		# listClassesUpgrade(listSpecialBuildingsClasses, listSpecialBuildings, listSpecialBuildingsClasses2)
+		# listBuildingClassNeededsIn2 = []
+		# listClassesUpgrade(listBuildingClassNeededsIn, listBuildingNeededsIn, listBuildingClassNeededsIn2)
+		# listBuildingClassNeededsOut2 = []
+		# listClassesUpgrade(listBuildingClassNeededsOut, listBuildingNeededsOut, listBuildingClassNeededsOut2)
+
+		# def listClassesPlace(listClasses2, offset, title):
+		# 	iY = y + offset
+		# 	iX = x
+		# 	iH = (h * 5 / 100)
+		# 	iRows = 1
+		# 	for listBuildingsInClass in listClasses2:
+		# 		if iRows > len(listBuildingsInClass):
+		# 			iRows = len(listBuildingsInClass)
+
+		# 	panelName = self.top.getNextWidgetName()
+		# 	screen.addPanel(panelName, title, "", False, True, iX, iY, w, h*10/100, PanelStyles.PANEL_STYLE_BLUE50, WidgetTypes.WIDGET_GENERAL, -1, -1 )
+		# 	screen.attachLabel(panelName, "", "  ")
+
+		# 	for listBuildingsInClass in listClasses2:
+		# 		iRowsCurrent = len(listBuildingsInClass)
+		# 		iY = y + offset + (iRows - iRowsCurrent) * iH / 2
+		# 		panelName2 = self.top.getNextWidgetName()
+		# 		screen.attachPanelAt(panelName, panelName2, "", "", True, False, PanelStyles.PANEL_STYLE_BLUE50, 0, 0, iH, iH * iRowsCurrent, WidgetTypes.WIDGET_GENERAL, -1, -1  )
+		# 		screen.attachLabel(panelName2, "", "  ")
+		# 		for iBuilding in listBuildingsInClass:
+		# 			screen.attachImageButton(panelName, "", gc.getBuildingInfo(iBuilding).getButton(), GenericButtonSizes.BUTTON_SIZE_CUSTOM, WidgetTypes.WIDGET_PEDIA_JUMP_TO_BUILDING, iBuilding, 1, False )
+		# 		iX += iH
+		# listClassesPlace(listBuildingClassNeededsIn2, (h * 50 / 100), "In")
+		# listClassesPlace(listSpecialBuildingsClasses2, (h * 65 / 100), "Special")
+		# listClassesPlace(listBuildingClassNeededsOut2, (h * 80 / 100), "Out")
+
+
+
+
+		# panelName = self.top.getNextWidgetName()
+		# screen.addPanel(panelName, "Flow charts", "", True, True, x, y+h*70/100, w, h*30/100, PanelStyles.PANEL_STYLE_BLUE50, WidgetTypes.WIDGET_GENERAL, -1, -1 )
+		# screen.attachLabel(panelName, "", "  ")
+		# kSpecialBuildingInfo.getDescription()
+
+		# panelNameIn = self.top.getNextWidgetName()
+		# screen.attachPanel(panelName, panelNameIn, "In", "", False, False, PanelStyles.PANEL_STYLE_BLUE50)
+		# screen.attachLabel(panelNameIn, "", "  ")
+
+		# for iBuildingClassLoop in listBuildingClassNeededsIn:
+		# 	panelName2 = self.top.getNextWidgetName()
+		# 	screen.attachPanel(panelNameIn, panelName2, "", "", True, False, PanelStyles.PANEL_STYLE_BLUE50)
+		# 	for iBuildingLoop in listBuildingNeededsIn:
+		# 		kBuildingInfoLoop = gc.getBuildingInfo(iBuildingLoop)
+		# 		if (not kBuildingInfoLoop.isGraphicalOnly()):
+		# 			iBuildingClassLoop2 = kBuildingInfoLoop.getBuildingClassType()
+		# 			if iBuildingClassLoop2 == iBuildingClassLoop:
+		# 					screen.attachImageButton(panelName2, "", kBuildingInfoLoop.getButton(), GenericButtonSizes.BUTTON_SIZE_CUSTOM, WidgetTypes.WIDGET_PEDIA_JUMP_TO_BUILDING, iBuilding, 1, False )
+
+
+		# panelNameSpecial = self.top.getNextWidgetName()
+		# screen.attachPanel(panelName, panelNameSpecial, kSpecialBuildingInfo.getDescription(), "", False, False, PanelStyles.PANEL_STYLE_BLUE50)
+		# screen.attachLabel(panelNameSpecial, "", "  ")
+
+		# for iBuildingClassLoop in listSpecialBuildingsClasses:
+		# 	panelName2 = self.top.getNextWidgetName()
+		# 	screen.attachPanel(panelNameSpecial, panelName2, "", "", True, False, PanelStyles.PANEL_STYLE_BLUE50)
+		# 	for iBuildingLoop in listSpecialBuildings:
+		# 		kBuildingInfoLoop = gc.getBuildingInfo(iBuildingLoop)
+		# 		if (not kBuildingInfoLoop.isGraphicalOnly()):
+		# 			iBuildingClassLoop2 = kBuildingInfoLoop.getBuildingClassType()
+		# 			if iBuildingClassLoop2 == iBuildingClassLoop:
+		# 					screen.attachImageButton(panelName2, "", kBuildingInfoLoop.getButton(), GenericButtonSizes.BUTTON_SIZE_CUSTOM, WidgetTypes.WIDGET_PEDIA_JUMP_TO_BUILDING, iBuilding, 1, False )
+
+		# panelNameOut = self.top.getNextWidgetName()
+		# screen.attachPanel(panelName, panelNameOut, "Out", "", False, False, PanelStyles.PANEL_STYLE_BLUE50)
+		# screen.attachLabel(panelNameOut, "", "  ")
+
+		# for iBuildingClassLoop in listBuildingClassNeededsOut:
+		# 	panelName2 = self.top.getNextWidgetName()
+		# 	screen.attachPanel(panelNameOut, panelName2, "", "", True, False, PanelStyles.PANEL_STYLE_BLUE50)
+		# 	for iBuildingLoop in range(gc.getNumBuildingInfos()):
+		# 		kBuildingInfoLoop = gc.getBuildingInfo(iBuildingLoop)
+		# 		if (not kBuildingInfoLoop.isGraphicalOnly()):
+		# 			iBuildingClassLoop2 = kBuildingInfoLoop.getBuildingClassType()
+		# 			if iBuildingClassLoop2 == iBuildingClassLoop:
+		# 					screen.attachImageButton(panelName2, "", kBuildingInfoLoop.getButton(), GenericButtonSizes.BUTTON_SIZE_CUSTOM, WidgetTypes.WIDGET_PEDIA_JUMP_TO_BUILDING, iBuilding, 1, False )
+
+
+		panelFlowChart = self.top.getNextWidgetName()
+		panelRequired = self.top.getNextWidgetName()
+		panelInClass = self.top.getNextWidgetName()
+		panelRequiredFor = self.top.getNextWidgetName()
+		screen.addPanel(panelFlowChart, "", "", True, True, x, y+h*50/100, w, h*50/100, PanelStyles.PANEL_STYLE_BLUE50, WidgetTypes.WIDGET_GENERAL, -1, -1 )
+
+		def uiAppendRow(szAttachTo, szName):
+			screen.attachPanel(szAttachTo, szName, "", "", False, False, PanelStyles.PANEL_STYLE_EMPTY)
+		def uiAppendColumn(szAttachTo, szName):
+			screen.attachPanel(szAttachTo, szName, "", "", True, False, PanelStyles.PANEL_STYLE_EMPTY)
+		def uiAppendBuildingIcon(szAttachTo, iBuilding):
+			screen.attachImageButton(szAttachTo, "", gc.getBuildingInfo(iBuilding).getButton(), GenericButtonSizes.BUTTON_SIZE_CUSTOM, WidgetTypes.WIDGET_PEDIA_JUMP_TO_BUILDING, iBuilding, 1, False)
+		uiAppendRow(panelFlowChart, panelRequired)
+		uiAppendRow(panelFlowChart, panelInClass)
+		uiAppendRow(panelFlowChart, panelRequiredFor)
+		screen.setPanelSize(panelInClass, x+w*30/100, y+h*60/100, w*50/100, h*30/100)
+
+		# screen.attachPanelAt(panelRequired, panelInClass, "", "", False, False, PanelStyles.PANEL_STYLE_BLUE50, x+w*30/100, y+h*60/100, w*30/100, h*30/100,  WidgetTypes.WIDGET_GENERAL, -1, -1 )
+
+
+		for iBuildingLoop in range(gc.getNumBuildingInfos()):
+			kBuildingInfoLoop = gc.getBuildingInfo(iBuildingLoop)
+			if (not kBuildingInfoLoop.isGraphicalOnly()):
+				iBuildingClassLoop = kBuildingInfoLoop.getBuildingClassType()
+				if(kBuildingInfoLoop.getSpecialBuildingType() == iSpecialBuildingType):
+					uiAppendBuildingIcon(panelInClass, iBuildingLoop)
+
+				if kBuildingInfo.isBuildingClassNeededInCity(iBuildingClassLoop):
+					uiAppendBuildingIcon(panelRequired, iBuildingLoop)
+
+				if kBuildingInfoLoop.isBuildingClassNeededInCity(iBuildingClass):
+					uiAppendBuildingIcon(panelRequiredFor, iBuildingLoop)
+
+		
+
+
+		# screen.addMultiListControlGFC("MapBuildingSelectionMultiList", u"", x, y, w, h, self.BOTTOM_BUTTON_ROWS, BOTTOM_BUTTON_SIZE, BOTTOM_BUTTON_SIZE, TableStyles.TABLE_STYLE_STANDARD )
+		# screen.clearMultiList("MapBuildingSelectionMultiList")
 
 
 	# Place great people modifiers

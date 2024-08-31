@@ -9316,32 +9316,79 @@ bool CvCity::canProduceYield(YieldTypes eYield) const
 // cache getMaxYieldCapacity - function namechange - Nightinggale
 int CvCity::getMaxYieldCapacityUncached() const
 {
-	int iCapacity = GC.getGameINLINE().getCargoYieldCapacity();
-
+	// calculating raw value.
+	int iCapacity = GC.getDefineINT("CITY_YIELD_CAPACITY");
 	for (int iBuildingClass = 0; iBuildingClass < GC.getNumBuildingClassInfos(); ++iBuildingClass)
 	{
 		BuildingTypes eBuilding = (BuildingTypes) GC.getCivilizationInfo(getCivilizationType()).getCivilizationBuildings(iBuildingClass);
-		if (eBuilding != NO_BUILDING)
+		if (NO_BUILDING != eBuilding && isHasBuilding(eBuilding))
 		{
-			if (isHasBuilding(eBuilding))
-			{
-				iCapacity += GC.getBuildingInfo(eBuilding).getYieldStorage() * GC.getGameSpeedInfo(GC.getGameINLINE().getGameSpeedType()).getStoragePercent() / 100;
-			}
+			iCapacity += GC.getBuildingInfo(eBuilding).getYieldStorage();
 		}
 	}
+	// add game speed modifier.
+	iCapacity *= GC.getGameSpeedInfo(GC.getGameINLINE().getGameSpeedType()).getStoragePercent();
+	iCapacity /= 100;
+	// add trait modifiers.
 	for (int iTrait = 0; iTrait < GC.getNumTraitInfos(); ++iTrait)
 	{
 		TraitTypes eTrait = (TraitTypes) iTrait;
-		if (eTrait != NO_TRAIT)
+		if (NO_TRAIT != eTrait && hasTrait(eTrait))
 		{
-			if (hasTrait(eTrait))
-			{
-				iCapacity *= 100 + GC.getTraitInfo(eTrait).getStorageCapacityModifier();
-				iCapacity /= 100;
-			}
+			iCapacity *= 100 + GC.getTraitInfo(eTrait).getStorageCapacityModifier();
+			iCapacity /= 100;
 		}
 	}
+	return iCapacity;
+}
 
+BuildingTypes CvCity::calculateReplacedBuildingWithBuilding(BuildingTypes eBuilding) const {
+	CvBuildingInfo& kBuilding = GC.getBuildingInfo(eBuilding);
+
+	// Проходимся по зданиям в своём классе зданий
+	BuildingTypes eNextBuilding = kBuilding.getIndexOf_NextBuildingType_In_SpecialBuilding();
+	while (eNextBuilding != eBuilding)
+	{
+		CvBuildingInfo& kNextBuilding = GC.getBuildingInfo(eNextBuilding);
+		if (isHasBuilding(eNextBuilding)) return eNextBuilding;
+		eNextBuilding = kNextBuilding.getIndexOf_NextBuildingType_In_SpecialBuilding();
+	}
+	return NO_BUILDING;
+}
+
+int CvCity::calculateMaxYieldCapacityWithBuilding(BuildingTypes eBuildingNew) const
+{
+	// get replaceble buildings
+	CvBuildingInfo& kBuildingNew = GC.getBuildingInfo(eBuildingNew);
+	BuildingTypes eBuildingReplaced = calculateReplacedBuildingWithBuilding(eBuildingNew);
+
+	// calculating raw value.
+	int iCapacity = GC.getDefineINT("CITY_YIELD_CAPACITY");
+	for (int iBuildingClass = 0; iBuildingClass < GC.getNumBuildingClassInfos(); ++iBuildingClass)
+	{
+		BuildingTypes eBuilding = (BuildingTypes)GC.getCivilizationInfo(getCivilizationType()).getCivilizationBuildings(iBuildingClass);
+		if (NO_BUILDING != eBuilding 
+			&& eBuilding != eBuildingReplaced 
+			&& isHasBuilding(eBuilding) 
+			|| eBuilding == eBuildingNew
+			)
+		{
+			iCapacity += GC.getBuildingInfo(eBuilding).getYieldStorage();
+		}
+	}
+	// add game speed modifier.
+	iCapacity *= GC.getGameSpeedInfo(GC.getGameINLINE().getGameSpeedType()).getStoragePercent();
+	iCapacity /= 100;
+	// add trait modifiers.
+	for (int iTrait = 0; iTrait < GC.getNumTraitInfos(); ++iTrait)
+	{
+		TraitTypes eTrait = (TraitTypes)iTrait;
+		if (NO_TRAIT != eTrait && hasTrait(eTrait))
+		{
+			iCapacity *= 100 + GC.getTraitInfo(eTrait).getStorageCapacityModifier();
+			iCapacity /= 100;
+		}
+	}
 	return iCapacity;
 }
 
@@ -14445,4 +14492,3 @@ TerrainTypes CvCity::getCenterPlotTerrainType() const
 	}
 }
 // WTP, ray, Center Plot specific Backgrounds - END
-

@@ -46,7 +46,7 @@ class CvPediaMain( CvPediaScreen.CvPediaScreen ):
 		self.CREDITS_ID = 11
 		self.RAEDME_ID = 12
 # TAC Ende
-		
+
 		self.nWidgetCount = 0
 
 		# screen instances
@@ -94,7 +94,7 @@ class CvPediaMain( CvPediaScreen.CvPediaScreen ):
 
 	def getScreen(self):
 		return CyGInterfaceScreen(self.PEDIA_MAIN_SCREEN_NAME, CvScreenEnums.PEDIA_MAIN)
-	
+
 	def setPediaCommonWidgets(self):
 		self.EXIT_TEXT = u"<font=4>" + localText.getText("TXT_KEY_PEDIA_SCREEN_EXIT", ()).upper() + "</font>"
 		self.BACK_TEXT = u"<font=4>" + localText.getText("TXT_KEY_PEDIA_SCREEN_BACK", ()).upper() + "</font>"
@@ -127,8 +127,8 @@ class CvPediaMain( CvPediaScreen.CvPediaScreen ):
 		self.szCategoryCivic = localText.getText("TXT_KEY_PEDIA_CATEGORY_CIVIC", ())
 		self.szCategoryConcept = localText.getText("TXT_KEY_PEDIA_CATEGORY_CONCEPT", ())
 		self.szCategoryHints = localText.getText("TXT_KEY_PEDIA_CATEGORY_HINTS", ())
-		
-		
+
+
 		self.listCategories = [ self.szCategoryUnit,
 								self.szCategoryProfession,
 								self.szCategoryFather,
@@ -144,8 +144,8 @@ class CvPediaMain( CvPediaScreen.CvPediaScreen ):
 								self.szCategoryCivic,
 								self.szCategoryConcept,
 								self.szCategoryHints, ]
-		
-								
+
+
 		screen = self.getScreen()
 		self.nWidgetCount = 0
 
@@ -180,7 +180,7 @@ class CvPediaMain( CvPediaScreen.CvPediaScreen ):
 
 		self.X_LINKS = self.W_SCREEN - 275
 		self.Y_LINKS = 80
-		
+
 		self.H_LINKS = self.H_SCREEN - 160
 		self.W_LINKS = 225
 
@@ -212,7 +212,7 @@ class CvPediaMain( CvPediaScreen.CvPediaScreen ):
 		screen.setText("ReadmeButton", "Background", self.README_TEXT, CvUtil.FONT_RIGHT_JUSTIFY, self.X_EXIT - self.W_SCREEN * 5 / 17, self.Y_EXIT, 0, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, self.RAEDME_ID, -1)
 # Readme Bildschirm Ende
 # TAC Ende
-		
+
 		# List of items on the right
 		screen.addListBoxGFC(self.LIST_ID, "", self.X_LINKS, self.Y_LINKS, self.W_LINKS, self.H_LINKS, TableStyles.TABLE_STYLE_STANDARD)
 		screen.enableSelect(self.LIST_ID, True)
@@ -710,7 +710,7 @@ class CvPediaMain( CvPediaScreen.CvPediaScreen ):
 
 		screen.updateListBox(self.szAreaId)
 
-		
+
 	def placeLinks(self, bRedraw):
 
 		screen = self.getScreen()
@@ -736,7 +736,7 @@ class CvPediaMain( CvPediaScreen.CvPediaScreen ):
 		return szName
 
 	def pediaJump(self, iScreen, iEntry, bRemoveFwdList):
-		
+
 		if (iEntry < 0):
 			return
 
@@ -836,8 +836,8 @@ class CvPediaMain( CvPediaScreen.CvPediaScreen ):
 			return self.pediaJump(CvScreenEnums.PEDIA_MAIN, int(CivilopediaPageTypes.CIVILOPEDIA_PAGE_CONCEPT), True)
 		if (szLink == "PEDIA_MAIN_HINTS"):
 			return self.pediaJump(CvScreenEnums.PEDIA_MAIN, int(CivilopediaPageTypes.CIVILOPEDIA_PAGE_HINTS), True)
-		
-		
+
+
 		for i in range(gc.getNumConceptInfos()):
 			if (gc.getConceptInfo(i).isMatchForLink(szLink, False)):
 				iEntryId = self.pediaHistorical.getIdFromEntryInfo(CivilopediaPageTypes.CIVILOPEDIA_PAGE_CONCEPT, i)
@@ -892,12 +892,12 @@ class CvPediaMain( CvPediaScreen.CvPediaScreen ):
 
 	# Will handle the input for this screen...
 	def handleInput (self, inputClass):
-		
+
 # TAC Start
-		screen = self.getScreen()			
+		screen = self.getScreen()
 		TextExit_ID = 13
 
-		if (self.W_SCREEN >= 1360):
+		if (screen.getXResolution() >= 1360):
 			TextFontSize = u"<font=4>"
 		else:
 			TextFontSize = u"<font=3>"
@@ -911,10 +911,10 @@ class CvPediaMain( CvPediaScreen.CvPediaScreen ):
 					screen.addDDSGFC("TextTopPanel", ArtFileMgr.getInterfaceArtInfo("INTERFACE_SCREEN_TITLE").getPath(), 0, 0, self.W_SCREEN, 55, WidgetTypes.WIDGET_GENERAL, -1, -1 )
 					screen.addDDSGFC("TextBottomPanel", ArtFileMgr.getInterfaceArtInfo("INTERFACE_SCREEN_TAB_OFF").getPath(), 0, self.H_SCREEN - 55, self.W_SCREEN, 55, WidgetTypes.WIDGET_GENERAL, -1, -1 )
 					screen.addDDSGFC("TextBackgroundShadow", ArtFileMgr.getInterfaceArtInfo("INTERFACE_EUROPE_SHADOW_BOX").getPath(), 0, 0, self.W_SCREEN, self.H_SCREEN, WidgetTypes.WIDGET_GENERAL, -1, -1 )
-					
+
 					szTextTitle = u"<font=4b>" + localText.getText("TXT_KEY_CREDITS_HEAD", ()).upper() + u"</font>"
 					szTextData = TextFontSize + localText.getText("[COLOR_FONT_GOLD]", ())
-					
+
 					#WTP
 					list = []
 					list.append("Nightinggale")
@@ -933,28 +933,28 @@ class CvPediaMain( CvPediaScreen.CvPediaScreen ):
 					list.append("TXT_KEY_CREDITS_FURSTBISCHOF")
 					list.append("jooe")
 					list.append("FlaviusBelisarius")
-					
+
 					szTextData += localText.getText("TXT_KEY_CREDITS_WTP", ())
 					szTextData += localText.getText("[NEWLINE]", ())
-					
+
 					for szName in (list):
 						szTextData += localText.getText("[ICON_BULLET] ", ())
 						szTextData += localText.getText(szName, ())
 						szTextData += localText.getText("[NEWLINE]", ())
-					
+
 					# special credits
 					list = []
 					list.append("TXT_KEY_CREDITS_f1rpo")
 					list.append("TXT_KEY_CREDITS_karadoc")
-					
+
 					szTextData += localText.getText("TXT_KEY_CREDITS_SPECIAL", ())
 					szTextData += localText.getText("[NEWLINE]", ())
-					
+
 					for szName in (list):
 						szTextData += localText.getText("[ICON_BULLET] ", ())
 						szTextData += localText.getText(szName, ())
 						szTextData += localText.getText("[NEWLINE]", ())
-					
+
 					# RAR
 					list = []
 					list.append("raystuttgart")
@@ -964,15 +964,15 @@ class CvPediaMain( CvPediaScreen.CvPediaScreen ):
 					list.append("Androrc")
 					list.append("Schmiddie (Robert E. Lee)")
 					list.append("orlanth")
-					
+
 					szTextData += localText.getText("TXT_KEY_CREDITS_RAR", ())
 					szTextData += localText.getText("[NEWLINE]", ())
 					szTextData += localText.getText("[NEWLINE]", ())
 					for szName in list:
 						szTextData += localText.getText("[ICON_BULLET] " + szName + "[NEWLINE]", ())
-					
+
 					szTextData += localText.getText("[NEWLINE]", ())
-					
+
 					# TAC
 					list = []
 					list.append("Akropolis")
@@ -984,38 +984,38 @@ class CvPediaMain( CvPediaScreen.CvPediaScreen ):
 					list.append("TXT_KEY_CREDITS_STOPSEL")
 					list.append("Writing Bull")
 					list.append("xXstrikerXx")
-					
+
 					szTextData += localText.getText("TXT_KEY_CREDITS_TAC", ())
 					szTextData += localText.getText("[NEWLINE]", ())
-					
+
 					for szName in (list):
 						szTextData += localText.getText("[ICON_BULLET] ", ())
 						szTextData += localText.getText(szName, ())
 						szTextData += localText.getText("[NEWLINE]", ())
-					
+
 					list = []
 					list.append("raystuttgart")
 					list.append("Pfeffersack")
 					list.append("Willi Tell")
 					list.append("King MB")
 					list.append("Robert E. Lee")
-					
+
 					for szName in (list):
 						szTextData += localText.getText("[ICON_BULLET] ", ())
 						szTextData += localText.getText(szName, ())
 						szTextData += u" "
 						szTextData += localText.getText("TXT_KEY_CREDITS_FORMER_MEMBER", ())
 						szTextData += localText.getText("[NEWLINE]", ())
-					
+
 					szTextData += localText.getText("[NEWLINE]", ())
-					
+
 					szTextData += localText.getText("TXT_KEY_CREDITS_MUSIC", ())
 					szTextData += localText.getText("[NEWLINE]", ())
 					szTextData += localText.getText("[NEWLINE]", ())
-					
+
 					szTextData += localText.getText("TXT_KEY_CREDITS_OTHER_PROJECTS", ())
 					szTextData += localText.getText("[NEWLINE]", ())
-					
+
 					# other, RAR
 					list = []
 					list.append("Isabelxxx")
@@ -1049,22 +1049,22 @@ class CvPediaMain( CvPediaScreen.CvPediaScreen ):
 					list.append("TXT_KEY_CREDITS_OTHER_NAME_2")
 					list.append("TXT_KEY_CREDITS_OTHER_NAME_3")
 					list.append("TXT_KEY_CREDITS_OTHER_NAME_4")
-					
+
 					for szName in (list):
 						szTextData += localText.getText("[ICON_BULLET] ", ())
 						szTextData += localText.getText(szName, ())
 						szTextData += localText.getText("[NEWLINE]", ())
-					
+
 					szTextData += localText.getText("[NEWLINE]", ())
-					
+
 					szTextData += localText.getText("TXT_KEY_CREDITS_OTHER_PROJECTS_TAC", ())
 					szTextData += localText.getText("[NEWLINE]", ())
 					szTextData += localText.getText("[NEWLINE]", ())
-					
+
 					szTextData += localText.getText("TXT_KEY_CREDITS_END", ())
-					
+
 					szTextData += u"</font>"
-					
+
 					screen.setLabel("TextTitle", "TextTopPanel", szTextTitle, CvUtil.FONT_CENTER_JUSTIFY, self.W_SCREEN / 2, self.Y_TITLE, 0, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_PEDIA_DESCRIPTION, -1, -1)
 					screen.attachMultilineTextAt("TextBackgroundShadow", "TextData", szTextData, self.W_SCREEN / 16, self.H_SCREEN / 8, self.W_SCREEN - self.W_SCREEN / 8, self.H_SCREEN - self.H_SCREEN / 4, WidgetTypes.WIDGET_GENERAL, -1, -1, CvUtil.FONT_CENTER_JUSTIFY)
 					screen.setText("TextExitButton", "Background", self.EXIT_TEXT, CvUtil.FONT_CENTER_JUSTIFY, self.W_SCREEN / 2, self.Y_EXIT, 0, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, TextExit_ID, -1)
@@ -1075,17 +1075,17 @@ class CvPediaMain( CvPediaScreen.CvPediaScreen ):
 					screen.addDDSGFC("TextTopPanel", ArtFileMgr.getInterfaceArtInfo("INTERFACE_SCREEN_TITLE").getPath(), 0, 0, self.W_SCREEN, 55, WidgetTypes.WIDGET_GENERAL, -1, -1 )
 					screen.addDDSGFC("TextBottomPanel", ArtFileMgr.getInterfaceArtInfo("INTERFACE_SCREEN_TAB_OFF").getPath(), 0, self.H_SCREEN - 55, self.W_SCREEN, 55, WidgetTypes.WIDGET_GENERAL, -1, -1 )
 					screen.addDDSGFC("TextBackgroundShadow", ArtFileMgr.getInterfaceArtInfo("INTERFACE_EUROPE_SHADOW_BOX").getPath(), 0, 0, self.W_SCREEN, self.H_SCREEN, WidgetTypes.WIDGET_GENERAL, -1, -1 )
-					
+
 					szTextTitle = u"<font=4b>" + localText.getText("TXT_KEY_README_HEAD", ()).upper() + u"</font>"
 					szTextData = TextFontSize + localText.getText("[COLOR_FONT_GOLD]", ()) + localText.getText("TXT_KEY_README_TEXT", ()) + u"</font>"
-										
+
 					screen.setLabel("TextTitle", "TextTopPanel", szTextTitle, CvUtil.FONT_CENTER_JUSTIFY, self.W_SCREEN / 2, self.Y_TITLE, 0, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_PEDIA_DESCRIPTION, -1, -1)
 					screen.attachMultilineTextAt("TextBackgroundShadow", "TextData", szTextData, self.W_SCREEN / 16, self.H_SCREEN / 8, self.W_SCREEN - self.W_SCREEN / 8, self.H_SCREEN - self.H_SCREEN / 4, WidgetTypes.WIDGET_GENERAL, -1, -1, CvUtil.FONT_LEFT_JUSTIFY)
 					screen.setText("TextExitButton", "Background", self.EXIT_TEXT, CvUtil.FONT_CENTER_JUSTIFY, self.W_SCREEN / 2, self.Y_EXIT, 0, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, TextExit_ID, -1)
 # Readme Bildschirm Ende
 
 				if (inputClass.getData1() == TextExit_ID):
-										
+
 					screen.hide("TextExitButton")
 					screen.hide("TextData")
 					screen.hide("TextBottomPanel")
@@ -1126,4 +1126,3 @@ class CvPediaMain( CvPediaScreen.CvPediaScreen ):
 		if (self.iLastScreen == CvScreenEnums.PEDIA_HISTORY):
 			return self.pediaHistorical.handleInput(inputClass)
 		return 0
-

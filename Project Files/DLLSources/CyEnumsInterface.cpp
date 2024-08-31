@@ -181,7 +181,7 @@ void CyEnumsPythonInterface()
 	addEnumValues(NO_WIDGET            , "WidgetTypes"        , "NO_WIDGET"        , "NUM_WIDGET_TYPES"         );
 	addEnumValues(NO_YIELD             , "YieldTypes"         , "NO_YIELD"         , "NUM_YIELD_TYPES"          );
 // python_enum_check.pl NEXT STATE
-	
+
 	EnumVector.push_back(new EnumContainer<int>(python::enum_<int>("GlobalDefines")));
 
 // python_enum_check.pl NEXT STATE
@@ -1417,6 +1417,7 @@ void CyEnumsPythonInterface()
 		.value("CIVILOPEDIA_PAGE_UNIT", CIVILOPEDIA_PAGE_UNIT)
 		.value("CIVILOPEDIA_PAGE_PROFESSION", CIVILOPEDIA_PAGE_PROFESSION)
 		.value("CIVILOPEDIA_PAGE_BUILDING", CIVILOPEDIA_PAGE_BUILDING)
+		.value("CIVILOPEDIA_PAGE_BUILDING_FLOW_CHART", CIVILOPEDIA_PAGE_BUILDING_FLOW_CHART)
 		.value("CIVILOPEDIA_PAGE_FATHER", CIVILOPEDIA_PAGE_FATHER)
 		.value("CIVILOPEDIA_PAGE_BONUS", CIVILOPEDIA_PAGE_BONUS)
 		.value("CIVILOPEDIA_PAGE_IMPROVEMENT", CIVILOPEDIA_PAGE_IMPROVEMENT)

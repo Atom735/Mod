@@ -37,6 +37,9 @@ protected:
 public:
 // cache getMaxYieldCapacity - end - Nightinggale
 
+	BuildingTypes calculateReplacedBuildingWithBuilding(BuildingTypes eBuilding) const;
+	int calculateMaxYieldCapacityWithBuilding(BuildingTypes eBuildingNew) const;
+
 	CvCity();
 	virtual ~CvCity();
 	//void init(int iID, PlayerTypes eOwner, int iX, int iY, bool bBumpUnits);
